@@ -2,7 +2,7 @@
 
 var Module = (function(){
   var app = {};
-
+  app.rooms = {};
   // fetch the server for new messages
   app.fetch = function(){
     // Fetch the server and push into the page
@@ -13,9 +13,9 @@ var Module = (function(){
       contentType: 'application/json',
       success: function (data) {
         //creat a loop that iterates over data and send to messageCreate function.
-        for(var i = 0; i < data.results.length; i++ ){
-          messageCreate(data.results[i]);
-        }
+
+        this.splitRooms(data);
+
       },
       error: function (data) {
         // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -38,6 +38,19 @@ var Module = (function(){
     $(p).text(message.text);
     // Creates the chain
     $('#feed').append(div).append(h4).append(p);
+  };
+  app.splitRooms = function(array){
+
+    for(var i = 0; i < array.results.length; i++ ){
+      var roomName = array.results[i].roomname;
+      var message = array.results[i];
+      // If there's no room, create a new property
+      if(!this.rooms[roomName]){
+        this.rooms[roomName] = [];
+      }
+      // push the message to the room
+      this.rooms[roomName].push(message);
+    }
   };
 
   return app;
