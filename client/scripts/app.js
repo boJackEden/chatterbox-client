@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-  var app = {};
+  app = {};
   app.userName = prompt('What is your name?') || 'anonymous';
   app.server ='https://api.parse.com/1/classes/chatterbox';
   app.currentRoom = "nothing";
@@ -64,7 +64,7 @@ $(document).ready(function(){
       $('#chats').html('');
     //iterate over feedArray
     for(var i=0; i<feedArray.results.length; i++){
-      if(array.results.room[i] === /*our button value*/){
+      if(feedArray.results[i].room === app.currentRoom){
         var div = $('<div class="message">');
         var h4 = $('<h4>');
         var p = $('<p>');
@@ -157,11 +157,13 @@ $(document).ready(function(){
     event.preventDefault();
     app.send(app.messageBuilder( $('#messageBox').val(), app.userName ));
     $('#messageBox').val('');
-  })
+  });
 
-  $(".roomButtons").on('click', function(){
+  $("#roomSelect").on('click',  '.roomButtons', function(){
+    console.log("you clicked!");
     app.currentRoom = $(this).val();
-  })
+    app.fetch();
+  });
 
   // Call fetch on button click, fetch then gets info from server and 
   // calls the splitrooms function and update feed function. 
